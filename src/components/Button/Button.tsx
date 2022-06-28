@@ -19,6 +19,7 @@ export const Button = styled.div<CustomButtonProps>`
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 
     font-size: ${props => props.size}rem;
 

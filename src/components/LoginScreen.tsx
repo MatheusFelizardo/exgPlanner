@@ -159,7 +159,7 @@ export default LoginScreen
 
 
 const LoginContainer = styled.div`
-    padding: 0 2.2rem;
+    padding: 0 2.2rem 2rem;
 `
 
 const CreateAccountWrapper = styled.div`
@@ -192,7 +192,7 @@ const OrWrapper = styled.div`
     }
 `
 const MainImageWrapper = styled.div`
-    margin: 6.5rem auto 7.1rem;
+   padding: 6.5rem 0 7.1rem;
     text-align: center;
 `
 const LoginWrapper = styled.div`
@@ -226,7 +226,7 @@ const CustomInput = styled.div`
     margin-top: 2.5rem;
     width: 100%;
     gap: .5rem;
-
+    position: relative;
     &:focus-within {
         svg {
             color: #00BFA6;
@@ -260,7 +260,7 @@ const CustomInput = styled.div`
 `
 const PasswordIconWrapper = styled.div`
     position: absolute;
-    right: 2.4rem;
+    right: 1rem;
 
     svg {
         font-size:2rem;

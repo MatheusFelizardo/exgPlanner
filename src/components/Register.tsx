@@ -177,14 +177,14 @@ const CreateAccountContainer = styled.div`
 `
 
 const CreateAccountWrapper = styled.div`
-    padding: 0 2.2rem;
+    padding: 0 2.2rem 2rem;
 `
 
 const CreateAccountMessage = styled.p`
     margin-bottom: 0.5rem;
 `
 const MainImageWrapper = styled.div`
-    margin: 6.5rem auto 7.1rem;
+   padding: 6.5rem 0 7.1rem;
     text-align: center;
 `
 const LoginWrapper = styled.div`

@@ -130,7 +130,7 @@ const AppStartContainer = styled.div`
 `
 
 const AppStartWrapper = styled.div`
-    padding: 4rem 2.2rem;
+    padding: 4rem 2.2rem 2rem;
 `
 const UserInformationWrapper = styled.div`
     h2 {
