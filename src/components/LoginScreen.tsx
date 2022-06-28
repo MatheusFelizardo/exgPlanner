@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import LoginImage from '../assets/img/login_image.svg'
 import GoogleIcon from '../assets/img/google-logo.svg'
-import {handleSaveToken, testEmail} from '../utils/utils'
+import {handleSaveOnLocalStorage, testEmail} from '../utils/utils'
 import { handleUserLogin } from '../api/login'
 import {MdOutlineVisibility, MdOutlineVisibilityOff, MdAlternateEmail, MdOutlineLock} from 'react-icons/md'
 import Image from 'next/image'
@@ -35,7 +35,7 @@ function LoginScreen() {
     if (password === '') error.password = 'Password cannot be empty'
 
     if(Object.keys(error).length) {
-        return setShowErrorMsg(error)
+      return setShowErrorMsg(error)
     }
 
     if (isEmailValid && password !== '') {
@@ -47,7 +47,8 @@ function LoginScreen() {
       }
 
       setUser(data)
-      handleSaveToken(data.token)
+      handleSaveOnLocalStorage('token', data.token)
+      handleSaveOnLocalStorage('user', data.user)
       router.push('/start')
     }
 
@@ -66,87 +67,87 @@ function LoginScreen() {
 
   return (
     <LoginContainer>
-        <MainImageWrapper>
-            <Image src={LoginImage} alt="Woman holding the world" />  
-        </MainImageWrapper>
+      <MainImageWrapper>
+        <Image src={LoginImage} alt="Woman holding the world" />  
+      </MainImageWrapper>
 
 
-        <LoginWrapper>
-            <h2>Login</h2>
-            <LoginForm>
+      <LoginWrapper>
+        <h2>Login</h2>
+        <LoginForm>
 
-            <CustomInput>
-                <MdAlternateEmail />
-                <input 
-                    id="login"
-                    type="email" 
-                    placeholder="Login" 
-                    value={login} 
-                    onChange={handleInputEmail} 
-                />
-            </CustomInput>
-            {showErrorMsg.email && <FormError>{showErrorMsg.email}</FormError> }
-            <CustomInput>
-                <MdOutlineLock />
-                <input 
-                    id="password" 
-                    type={passType} 
-                    placeholder="Password" 
-                    value={password} 
-                    onChange={handleInputPassword} 
-                />
-                { 
-                password ? 
-                    showPassword ? 
-                    <PasswordIconWrapper>
-                        <MdOutlineVisibility onClick={()=> {
-                            setShowPassword(state => !state) 
-                            setPassType('password')}
-                        }/> 
-                    </PasswordIconWrapper> : 
-                    <PasswordIconWrapper>
-                        <MdOutlineVisibilityOff onClick={()=> {
-                            setShowPassword(state => !state)
-                            setPassType('text')
-                        }} /> 
-                    </PasswordIconWrapper>
+          <CustomInput>
+            <MdAlternateEmail />
+            <input 
+              id="login"
+              type="email" 
+              placeholder="Login" 
+              value={login} 
+              onChange={handleInputEmail} 
+            />
+          </CustomInput>
+          {showErrorMsg.email && <FormError>{showErrorMsg.email}</FormError> }
+          <CustomInput>
+            <MdOutlineLock />
+            <input 
+              id="password" 
+              type={passType} 
+              placeholder="Password" 
+              value={password} 
+              onChange={handleInputPassword} 
+            />
+            { 
+              password ? 
+                showPassword ? 
+                  <PasswordIconWrapper>
+                    <MdOutlineVisibility onClick={()=> {
+                      setShowPassword(state => !state) 
+                      setPassType('password')}
+                    }/> 
+                  </PasswordIconWrapper> : 
+                  <PasswordIconWrapper>
+                    <MdOutlineVisibilityOff onClick={()=> {
+                      setShowPassword(state => !state)
+                      setPassType('text')
+                    }} /> 
+                  </PasswordIconWrapper>
                 : null
-                }
-            </CustomInput>
-            {showErrorMsg.password && <FormError>{showErrorMsg.password}</FormError> }
+            }
+          </CustomInput>
+          {showErrorMsg.password && <FormError>{showErrorMsg.password}</FormError> }
 
-                <Link href="/forgot">
-                    <ResetPasswordLink>Forgot your password?</ResetPasswordLink>
-                </Link>
+          <Link href="/forgot">
+            <ResetPasswordLink>Forgot your password?</ResetPasswordLink>
+          </Link>
 
-                <Button 
-                as="button" 
-                bg='#00BFA6' 
-                fontColor='#FFF' 
-                size={2} 
-                margin={'4.1rem 0 3.5rem'} 
-                onClick={(e:any)=> handleLogin(e)}>
-                    Login
-                </Button>
+          <Button 
+            as="button" 
+            bg='#00BFA6' 
+            fontColor='#FFF' 
+            size={2} 
+            margin={'4.1rem 0 3.5rem'} 
+            onClick={(e:any)=> handleLogin(e)}>
+            Login
+          </Button>
 
-            </LoginForm>
-        </LoginWrapper>
+        </LoginForm>
+      </LoginWrapper>
 
-        <OrWrapper>OR</OrWrapper>
+      <OrWrapper>OR</OrWrapper>
 
-        <div className="google-btn-wrapper">
-            <Button bg='#E6E6E6' fontColor='#000' size={1.4} margin={'5.6rem 0 2.2rem'}>
-                <GoogleIconWrapper>
-                    <Image src={GoogleIcon} alt="Google Logo" />
-                </GoogleIconWrapper>
-                <span>Login with Google</span>
-            </Button>
+      <div className="google-btn-wrapper">
+        <Button bg='#E6E6E6' fontColor='#000' size={1.4} margin={'5.6rem 0 2.2rem'}>
+          <GoogleIconWrapper>
+            <Image src={GoogleIcon} alt="Google Logo" />
+          </GoogleIconWrapper>
+          <span>Login with Google</span>
+        </Button>
 
-        </div>
+      </div>
 
-        <CreateAccountWrapper>
-            New to exgPlanner? <Link href="/register"><a >Register</a></Link>
-        </CreateAccountWrapper>
+      <CreateAccountWrapper>
+        New to exgPlanner? <Link href="/register"><a >Register</a></Link>
+      </CreateAccountWrapper>
 
     </LoginContainer>
   )

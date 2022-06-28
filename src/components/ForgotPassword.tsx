@@ -10,54 +10,54 @@ import { Button } from './Button/Button'
 
 const ForgotPassword = () => {
 
-    const handleSubmit = (e:EventProps) => {
-        e.preventDefault()
-        console.log('Logic to recover email')
-    }
+  const handleSubmit = (e:EventProps) => {
+    e.preventDefault()
+    console.log('Logic to recover email')
+  }
 
   return (
     <ResetPasswordContainer>
-        <BackToLoginWrapper>
-            <Link href="/">
-                <a>Back to Login</a>
-            </Link>
-        </BackToLoginWrapper>
+      <BackToLoginWrapper>
+        <Link href="/">
+          <a>Back to Login</a>
+        </Link>
+      </BackToLoginWrapper>
 
 
-        <ResetPasswordWrapper>
-            <MainImageWrapper>
-                <Image src={LoginImage} alt="Woman holding the world" />  
-            </MainImageWrapper>
+      <ResetPasswordWrapper>
+        <MainImageWrapper>
+          <Image src={LoginImage} alt="Woman holding the world" />  
+        </MainImageWrapper>
 
 
-            <LoginWrapper>
-                <h2>Forgot your password?</h2>
-                <LoginForm>
+        <LoginWrapper>
+          <h2>Forgot your password?</h2>
+          <LoginForm>
                 
-                <ForgotMessage>
-                    Please fill your e-mail and we&apos;ll send you an email to recovery it.
-                </ForgotMessage>
+            <ForgotMessage>
+              Please fill your e-mail and we&apos;ll send you an email to recovery it.
+            </ForgotMessage>
 
-                <CustomInput>
-                    <MdAlternateEmail />
-                    <input 
-                        id="email"
-                        type="email" 
-                        placeholder="myemail@email.com" 
-                    />
-                </CustomInput>
+            <CustomInput>
+              <MdAlternateEmail />
+              <input 
+                id="email"
+                type="email" 
+                placeholder="myemail@email.com" 
+              />
+            </CustomInput>
             
-                <Button as="button" bg='#00BFA6' fontColor='#FFF' size={2} margin={'4.5rem 0'} onClick={()=> handleSubmit(e)}>Reset</Button>
+            <Button as="button" bg='#00BFA6' fontColor='#FFF' size={2} margin={'4.5rem 0'} onClick={(e:any)=> handleSubmit(e)}>Reset</Button>
 
-                </LoginForm>
-            </LoginWrapper>
+          </LoginForm>
+        </LoginWrapper>
 
-            <OrWrapper>OR</OrWrapper>
+        <OrWrapper>OR</OrWrapper>
 
-            <CreateAccountWrapper>
-                New to exgPlanner? <Link href="/register"><a >Register</a></Link>
-            </CreateAccountWrapper>
-        </ResetPasswordWrapper>
+        <CreateAccountWrapper>
+          New to exgPlanner? <Link href="/register"><a >Register</a></Link>
+        </CreateAccountWrapper>
+      </ResetPasswordWrapper>
     </ResetPasswordContainer>
   )
 }

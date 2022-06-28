@@ -1,3 +1,13 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "extends":[ "next/core-web-vitals", "eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime"],
+  
+  "rules": {
+    "prefer-const": "warn",
+    "indent": ["error", 2],
+    "react/jsx-indent": ["error", 2],
+    "react/jsx-indent-props": ["error", 2],
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }]
+  }
 }

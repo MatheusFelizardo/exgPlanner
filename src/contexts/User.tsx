@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import { getUserDataByToken } from '@App/api/login'
 import React, { createContext, ReactNode, useEffect, useMemo, useState } from 'react'
 
 
@@ -13,24 +15,40 @@ interface UserContextProps {
 }
 
 interface UserProviderProps {
-    children: ReactNode;
+    children?: ReactNode;
   }
 
 export const UserContext = createContext({} as UserContextProps);
 
 export const User = ({children}: UserProviderProps) => {
-    const [user, setUser] = useState<UserProps>({name: null, email: null, token: null})
+  const [user, setUser] = useState<UserProps>({name: null, email: null, token: null})
 
-    const value = useMemo(()=> {
-        return {
-            user,
-            setUser
-        }
-    }, [user])
+  useEffect(() => {
+
+    const getUser = async(token: string) => {
+      const response = await getUserDataByToken(token)
+      const { data } = response.data.getUserByToken
+
+      setUser(data)
+    }
+    const token:string|null = window.localStorage.getItem('token')
+
+    if(token) {
+      getUser(token)
+    }
+   
+  }, [])
+
+  const value = useMemo(()=> {
+    return {
+      user,
+      setUser
+    }
+  }, [user])
 
   return (
     <UserContext.Provider value={value}>
-        {children}
+      {children}
     </UserContext.Provider>
   )
 }

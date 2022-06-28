@@ -1,5 +1,5 @@
 import { UserContext } from '@App/contexts/User'
-import { handleRemoveUserToken } from '@App/utils/utils'
+import { handleRemoveItemFromLocalStorage } from '@App/utils/utils'
 import Link from 'next/link'
 import React, { useContext } from 'react'
 import { MdLogout, MdPerson } from 'react-icons/md'
@@ -11,23 +11,23 @@ const AppHeader = () => {
 
   return (
     <InitialHeader>
-            <HeaderItemWrapper>
-                <HeaderItem>
-                    <MdPerson />
-                    <span>{name}</span>
+      <HeaderItemWrapper>
+        <HeaderItem>
+          <MdPerson />
+          <span>{name}</span>
 
-                </HeaderItem>
+        </HeaderItem>
 
-            </HeaderItemWrapper>
+      </HeaderItemWrapper>
 
-            <LogoutWrapper>
-                <Link href="/">
-                    <a onClick={handleRemoveUserToken}>
-                        <MdLogout />
-                    </a>
-                </Link>
-            </LogoutWrapper>
-        </InitialHeader>
+      <LogoutWrapper>
+        <Link href="/">
+          <a onClick={()=>handleRemoveItemFromLocalStorage('token')}>
+            <MdLogout />
+          </a>
+        </Link>
+      </LogoutWrapper>
+    </InitialHeader>
   )
 }
 
@@ -37,7 +37,7 @@ export default AppHeader
 const InitialHeader = styled.div`
     height: 6rem;
     width: 100%;
-    background: #b00f47;
+    background: linear-gradient(45deg, #00BFA6, #00bf43);;
     display: flex;
     justify-content: space-between;
     align-items: center;

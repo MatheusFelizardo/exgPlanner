@@ -6,13 +6,13 @@ import type { AppProps } from 'next/app'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-      <ThemeProvider theme={theme}>
-        <User>
-          <Component {...pageProps} />
+    <ThemeProvider theme={theme}>
+      <User>
+        <Component {...pageProps} />
 
-          <GlobalStyle />
-        </User>
-      </ThemeProvider>
+        <GlobalStyle />
+      </User>
+    </ThemeProvider>
   )
 }
 

@@ -20,6 +20,11 @@ const GlobalStyle = createGlobalStyle<any>`
     p, span, a, li {
         font-size: 1.6rem;
     }
+
+    body {
+        max-width: 600px;
+        margin: auto;
+    }
 `;
  
 export default GlobalStyle;

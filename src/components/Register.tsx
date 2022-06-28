@@ -6,7 +6,7 @@ import {MdOutlineVisibility, MdOutlineVisibilityOff, MdAlternateEmail, MdOutline
 import Image from 'next/image'
 import { EventProps } from '@App/utils/types'
 import Link from 'next/link'
-import { handleSaveToken, testEmail } from '../utils/utils'
+import { handleSaveOnLocalStorage, testEmail } from '../utils/utils'
 import { handleUserLogin, signUp } from '@App/api/login'
 import { Button } from './Button/Button'
 import { useRouter } from 'next/router'
@@ -18,159 +18,154 @@ interface UserLoginProps {
     name?:string
 }
 
-interface DataProps {
-    email?: string 
-    password?: string
-    name?:string
-}
-
-
 const Register = () => {
 
-    const { setUser } = useContext(UserContext)
-    const router = useRouter()
+  const { setUser } = useContext(UserContext)
+  const router = useRouter()
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [showErrorMsg, setShowErrorMsg] = useState<UserLoginProps>({name: '', email: '', password: ''})
-    const [passType, setPassType] = useState('password')
-    const [showPassword, setShowPassword] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showErrorMsg, setShowErrorMsg] = useState<UserLoginProps>({name: '', email: '', password: ''})
+  const [passType, setPassType] = useState('password')
+  const [showPassword, setShowPassword] = useState(false)
 
-    const handleRegister = async (e:EventProps) => {
-        e.preventDefault()
-        const error:{name?: string, email?: string, password?: string} = {}
+  const handleRegister = async (e:EventProps) => {
+    e.preventDefault()
+    const error:{name?: string, email?: string, password?: string} = {}
 
-        const isEmailValid = testEmail(email)
+    const isEmailValid = testEmail(email)
 
-        if(!isEmailValid) error.email = 'Please type a valid email'
+    if(!isEmailValid) error.email = 'Please type a valid email'
 
-        if (password === '') error.password = 'Password cannot be empty'
-        if (name === '') error.name = 'Name cannot be empty'
+    if (password === '') error.password = 'Password cannot be empty'
+    if (name === '') error.name = 'Name cannot be empty'
 
-        if(Object.keys(error).length) {
-            return setShowErrorMsg(error)
-        }
+    if(Object.keys(error).length) {
+      return setShowErrorMsg(error)
+    }
 
-        if (isEmailValid && password !== '') {
-            const response = await signUp(name,email, password)
-            const { error, data } = await response.data.signUp
+    if (isEmailValid && password !== '') {
+      const response = await signUp(name,email, password)
+      const { error, data } = await response.data.signUp
             
-            if (error) {
-            const element = <span>{error}. If you forgot your password <Link href="/forgot"><a>click here.</a></Link></span>
+      if (error) {
+        const element = <span>{error}. If you forgot your password <Link href="/forgot"><a>click here.</a></Link></span>
 
-            return setShowErrorMsg({email: element})
-            }
+        return setShowErrorMsg({email: element})
+      }
 
-            setUser(data)
+      setUser(data)
 
-            const newUserData = await handleUserLogin(data.login, password)
-            handleSaveToken(newUserData.token)
-            router.push('/start')
-        }
+      const newUserData = await handleUserLogin(data.login, password)
+      handleSaveOnLocalStorage('token', newUserData.token)
+      handleSaveOnLocalStorage('user', newUserData.user)
+      
+      router.push('/start')
     }
+  }
 
-    const handleInputEmail = (e:EventProps) => {
-        setShowErrorMsg({...showErrorMsg, email: ''})
-        setEmail(e.target.value)
-    }
-    const handleInputPassword = (e:EventProps) => {
-        setShowErrorMsg({...showErrorMsg, password: ''})
-        setPassword(e.target.value)
-    }
-    const handleInputName = (e:EventProps) => {
-        setShowErrorMsg({...showErrorMsg, name: ''})
-        setName(e.target.value)
-    }
+  const handleInputEmail = (e:EventProps) => {
+    setShowErrorMsg({...showErrorMsg, email: ''})
+    setEmail(e.target.value)
+  }
+  const handleInputPassword = (e:EventProps) => {
+    setShowErrorMsg({...showErrorMsg, password: ''})
+    setPassword(e.target.value)
+  }
+  const handleInputName = (e:EventProps) => {
+    setShowErrorMsg({...showErrorMsg, name: ''})
+    setName(e.target.value)
+  }
 
   return (
     <CreateAccountContainer>
-        <BackToLoginWrapper>
-            <Link href="/">
-                <a>Back to Login</a>
-            </Link>
-        </BackToLoginWrapper>
+      <BackToLoginWrapper>
+        <Link href="/">
+          <a>Back to Login</a>
+        </Link>
+      </BackToLoginWrapper>
         
-        <CreateAccountWrapper>
-            <MainImageWrapper>
-                <Image src={LoginImage} alt="Woman holding the world" />  
-            </MainImageWrapper>
+      <CreateAccountWrapper>
+        <MainImageWrapper>
+          <Image src={LoginImage} alt="Woman holding the world" />  
+        </MainImageWrapper>
             
-            <LoginWrapper>
-            <h2>Create account</h2>
-            <LoginForm>
+        <LoginWrapper>
+          <h2>Create account</h2>
+          <LoginForm>
             
             <CreateAccountMessage>
-                Please fill all fields to create your account.
+              Please fill all fields to create your account.
             </CreateAccountMessage>
 
             <CustomInput>
-                <MdPerson />
-                <input 
-                    id="name"
-                    type="text" 
-                    placeholder="Name" 
-                    value={name} 
-                    onChange={handleInputName} 
-                />
+              <MdPerson />
+              <input 
+                id="name"
+                type="text" 
+                placeholder="Name" 
+                value={name} 
+                onChange={handleInputName} 
+              />
             </CustomInput>
             {showErrorMsg.name && <FormError>{showErrorMsg.name}</FormError> }
 
             <CustomInput>
-                <MdAlternateEmail />
-                <input 
-                    id="login"
-                    type="email" 
-                    placeholder="Email"  
-                    value={email} 
-                    onChange={handleInputEmail} 
-                />
+              <MdAlternateEmail />
+              <input 
+                id="login"
+                type="email" 
+                placeholder="Email"  
+                value={email} 
+                onChange={handleInputEmail} 
+              />
             </CustomInput>
             {showErrorMsg.email && <FormError>{showErrorMsg.email}</FormError> }
 
             <CustomInput>
-                <MdOutlineLock />
-                <input 
-                    id="password" 
-                    type={passType} 
-                    placeholder="Password" 
-                    value={password} 
-                    onChange={handleInputPassword} 
-                />
-                { 
+              <MdOutlineLock />
+              <input 
+                id="password" 
+                type={passType} 
+                placeholder="Password" 
+                value={password} 
+                onChange={handleInputPassword} 
+              />
+              { 
                 password ? 
-                    showPassword ? 
+                  showPassword ? 
                     <PasswordIconWrapper>
-                        <MdOutlineVisibility onClick={()=> {
-                            setShowPassword(state => !state) 
-                            setPassType('password')}
-                        }/> 
+                      <MdOutlineVisibility onClick={()=> {
+                        setShowPassword(state => !state) 
+                        setPassType('password')}
+                      }/> 
                     </PasswordIconWrapper> : 
                     <PasswordIconWrapper>
-                        <MdOutlineVisibilityOff onClick={()=> {
-                            setShowPassword(state => !state)
-                            setPassType('text')
-                        }} /> 
+                      <MdOutlineVisibilityOff onClick={()=> {
+                        setShowPassword(state => !state)
+                        setPassType('text')
+                      }} /> 
                     </PasswordIconWrapper>
-                : null
-                }
+                  : null
+              }
             </CustomInput>
             {showErrorMsg.password && <FormError>{showErrorMsg.password}</FormError> }
 
             <Button 
-                as="button" 
-                bg='#00BFA6' 
-                fontColor='#FFF' 
-                size={2} 
-                margin={'4.5rem 0 2rem'} 
-                onClick={(e:any)=> handleRegister(e)}
+              as="button" 
+              bg='#00BFA6' 
+              fontColor='#FFF' 
+              size={2} 
+              margin={'4.5rem 0 2rem'} 
+              onClick={(e:any)=> handleRegister(e)}
             > 
-                Create account
+              Create account
             </Button>
 
-            </LoginForm>
+          </LoginForm>
         </LoginWrapper>
-        </CreateAccountWrapper>
+      </CreateAccountWrapper>
     </CreateAccountContainer>
   )
 }
