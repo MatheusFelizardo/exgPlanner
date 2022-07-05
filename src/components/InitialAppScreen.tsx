@@ -5,7 +5,7 @@ import AppHeader from '@App/components/Logged/AppHeader'
 import { Button } from '@App/components/Button/Button'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { EventProps } from '@App/utils/types'
+import { COINS, EventProps } from '@App/utils/types'
 import {MdSave} from 'react-icons/md'
 import { destinationOptions, DetinationProps } from '@App/utils/mockedData'
 import Input from './Input/Input'
@@ -19,11 +19,15 @@ const InitialAppScreen = () => {
   const [currentBudget, setCurrentBudget] = useState('')
   const [travelDate, setTravelDate] = useState('')
   const [exchangeCost, setExchangeCost] = useState('')
+  const [currentBudgetCurrency, setCurrentBudgetCurrency]  = useState('')
+  const [totalCostCurrency, setTotalCostCurrency]  = useState('')
 
   const [showForm, setShowForm] = useState(false)
   const { user } = useContext(UserContext)
   const [infoTosave, setInfoToSave] = useState({})
   const { name } = user
+
+  console.log(COINS)
 
   const handleSubmitForm = (e:EventProps) => {
     e.preventDefault()
@@ -77,33 +81,52 @@ const InitialAppScreen = () => {
               />
             </CustomInput>
 
-            <CustomInput>
+            <CustomCurrencyInput>
               {destination.currency && 
-              <Currency className="currency" as="label" htmlFor="currentBudget">{destination.currency}</Currency>
+              // <Currency className="currency" as="label" htmlFor="currentBudget">{destination.currency}</Currency>
+              <select 
+                name="currentBudgetCurrency"
+                value={currentBudgetCurrency ? currentBudgetCurrency : destination.currency}
+                onChange={(e:any)=> setCurrentBudgetCurrency(e.target.value)}
+              >
+                {COINS.map(coin => {
+                  return (
+                    <option value={coin} key={coin}>{coin}</option>
+                  )
+                })}
+              </select>
               }
               <Input 
                 name="currentBudget" 
                 label="Your current budget" 
                 type="number" 
                 value={currentBudget}
-                style={{paddingLeft: '5rem'}}
                 onChange={(e)=> setCurrentBudget(e.target.value)}
               />
-            </CustomInput>
+            </CustomCurrencyInput>
 
-            <CustomInput>
+            <CustomCurrencyInput>
               {destination.currency && 
-              <Currency className="currency" as="label" htmlFor="exchangeCost">{destination.currency}</Currency>
+              <select 
+                name="totalCostCurrency"
+                value={totalCostCurrency ? totalCostCurrency : destination.currency}
+                onChange={(e:any)=> setTotalCostCurrency(e.target.value)}
+              >
+                {COINS.map(coin => {
+                  return (
+                    <option value={coin} key={coin}>{coin}</option>
+                  )
+                })}
+              </select>
               }
               <Input 
                 name="exchangeCost" 
                 label="Total cost of exchange" 
                 type="number" 
                 value={exchangeCost}
-                style={{paddingLeft: '5rem'}}
                 onChange={(e)=> setExchangeCost(e.target.value)}
               />
-            </CustomInput>
+            </CustomCurrencyInput>
 
             <Button 
               as="button"
@@ -206,5 +229,27 @@ const Currency = styled.span`
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 0 !important;
+
+`
+
+const CustomCurrencyInput = styled(CustomInput)`
+  display: flex;
+
+  input {
+    padding-left: 6rem;
+  }
+  
+  select { 
+    position: absolute;
+    bottom: 0;
+    padding: 0.6rem 0;
+    background: ${({theme}) => theme.colors.primary};
+    color: ${({theme}) => theme.colors.white};
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 0 !important;
+    max-width: 46px;
+    border-radius: 6px;
+  }
 
 `
