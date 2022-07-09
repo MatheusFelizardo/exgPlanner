@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { getUserDataByToken } from '@App/api/login'
 import React, { createContext, ReactNode, useEffect, useMemo, useState } from 'react'
-
+import Router from 'next/router'
 
 interface UserProps {
     name: string | null
@@ -12,6 +12,7 @@ interface UserProps {
 interface UserContextProps {
     user: UserProps 
     setUser: (user: UserProps) => void
+    isLoading: boolean
 }
 
 interface UserProviderProps {
@@ -22,9 +23,9 @@ export const UserContext = createContext({} as UserContextProps);
 
 export const User = ({children}: UserProviderProps) => {
   const [user, setUser] = useState<UserProps>({name: null, email: null, token: null})
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-
     const getUser = async(token: string) => {
       const response = await getUserDataByToken(token)
       const { data } = response.data.getUserByToken
@@ -35,16 +36,27 @@ export const User = ({children}: UserProviderProps) => {
 
     if(token) {
       getUser(token)
+      setTimeout(() => {
+        // adjust this logic later will go to /start only if the user never fill the fields on this page.
+        // else will go to dashboard
+        Router.push('/start')
+        setIsLoading(false)
+      }, 2000)
+    } else {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 2000)
     }
-   
+    
   }, [])
 
   const value = useMemo(()=> {
     return {
       user,
-      setUser
+      setUser,
+      isLoading
     }
-  }, [user])
+  }, [user, isLoading])
 
   return (
     <UserContext.Provider value={value}>

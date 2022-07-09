@@ -14,7 +14,7 @@ import { Button } from './Button/Button'
 
 
 function LoginScreen() {
-  const { setUser } = useContext(UserContext)
+  const { setUser, isLoading, user } = useContext(UserContext)
   const router = useRouter()
 
   const [login, setLogin] = useState('')
@@ -64,92 +64,131 @@ function LoginScreen() {
     setPassword(e.target.value)
   }
 
+  
 
   return (
-    <LoginContainer>
-      <MainImageWrapper>
-        <Image src={LoginImage} alt="Woman holding the world" />  
-      </MainImageWrapper>
+    <>
+      {isLoading ? 
+        <LoginContainer>
+          <MainImageWrapper>
+            <Image src={LoginImage} alt="Woman holding the world" />  
+          </MainImageWrapper>
 
 
-      <LoginWrapper>
-        <h2>Login</h2>
-        <LoginForm>
+          <LoginWrapper>
+            <LoadingWrapper>
+              <LoadingText>
+                <TextWithAnimation delay="100" color="#00BFA6">L</TextWithAnimation>
+                <TextWithAnimation delay="200" color="#00BFA6">O</TextWithAnimation>
+                <TextWithAnimation delay="300" color="#00BFA6">A</TextWithAnimation>
+                <TextWithAnimation delay="400" color="#00BFA6">D</TextWithAnimation>
+                <TextWithAnimation delay="500" color="#00BFA6">I</TextWithAnimation>
+                <TextWithAnimation delay="600" color="#00BFA6">N</TextWithAnimation>
+                <TextWithAnimation delay="700" color="#00BFA6">G</TextWithAnimation>
 
-          <CustomInput>
-            <MdAlternateEmail />
-            <input 
-              id="login"
-              type="email" 
-              placeholder="Login" 
-              value={login} 
-              onChange={handleInputEmail} 
-            />
-          </CustomInput>
-          {showErrorMsg.email && <FormError>{showErrorMsg.email}</FormError> }
-          <CustomInput>
-            <MdOutlineLock />
-            <input 
-              id="password" 
-              type={passType} 
-              placeholder="Password" 
-              value={password} 
-              onChange={handleInputPassword} 
-            />
-            { 
-              password ? 
-                showPassword ? 
-                  <PasswordIconWrapper>
-                    <MdOutlineVisibility onClick={()=> {
-                      setShowPassword(state => !state) 
-                      setPassType('password')}
-                    }/> 
-                  </PasswordIconWrapper> : 
-                  <PasswordIconWrapper>
-                    <MdOutlineVisibilityOff onClick={()=> {
-                      setShowPassword(state => !state)
-                      setPassType('text')
-                    }} /> 
-                  </PasswordIconWrapper>
-                : null
-            }
-          </CustomInput>
-          {showErrorMsg.password && <FormError>{showErrorMsg.password}</FormError> }
 
-          <Link href="/forgot">
-            <ResetPasswordLink>Forgot your password?</ResetPasswordLink>
-          </Link>
+                <DotContainer>
+                  <TextWithAnimation className="dot" delay="800" color="#00BFA6"></TextWithAnimation>
+                  <TextWithAnimation className="dot" delay="900" color="#00BFA6"></TextWithAnimation>
+                  <TextWithAnimation className="dot" delay="1000" color="#00BFA6"></TextWithAnimation>
+                </DotContainer>
+              </LoadingText>
+            </LoadingWrapper>
+          
 
-          <Button 
-            as="button" 
-            bg='#00BFA6' 
-            fontColor='#FFF' 
-            size={2} 
-            margin={'4.1rem 0 3.5rem'} 
-            onClick={(e:any)=> handleLogin(e)}>
-            Login
-          </Button>
+          </LoginWrapper>
 
-        </LoginForm>
-      </LoginWrapper>
 
-      <OrWrapper>OR</OrWrapper>
+        </LoginContainer>
+        : 
+        (!user.email && 
+          <LoginContainer>
+            <MainImageWrapper>
+              <Image src={LoginImage} alt="Woman holding the world" />  
+            </MainImageWrapper>
 
-      <div className="google-btn-wrapper">
-        <Button bg='#E6E6E6' fontColor='#000' size={1.4} margin={'5.6rem 0 2.2rem'}>
-          <GoogleIconWrapper>
-            <Image src={GoogleIcon} alt="Google Logo" />
-          </GoogleIconWrapper>
-          <span>Login with Google</span>
-        </Button>
 
-      </div>
+            <LoginWrapper>
+              <h2>Login</h2>
+              <LoginForm>
 
-      <CreateAccountWrapper>
-        New to exgPlanner? <Link href="/register"><a >Register</a></Link>
-      </CreateAccountWrapper>
+                <CustomInput>
+                  <MdAlternateEmail />
+                  <input 
+                    id="login"
+                    type="email" 
+                    placeholder="Login" 
+                    value={login} 
+                    onChange={handleInputEmail} 
+                  />
+                </CustomInput>
+                {showErrorMsg.email && <FormError>{showErrorMsg.email}</FormError> }
+                <CustomInput>
+                  <MdOutlineLock />
+                  <input 
+                    id="password" 
+                    type={passType} 
+                    placeholder="Password" 
+                    value={password} 
+                    onChange={handleInputPassword} 
+                  />
+                  { 
+                    password ? 
+                      showPassword ? 
+                        <PasswordIconWrapper>
+                          <MdOutlineVisibility onClick={()=> {
+                            setShowPassword(state => !state) 
+                            setPassType('password')}
+                          }/> 
+                        </PasswordIconWrapper> : 
+                        <PasswordIconWrapper>
+                          <MdOutlineVisibilityOff onClick={()=> {
+                            setShowPassword(state => !state)
+                            setPassType('text')
+                          }} /> 
+                        </PasswordIconWrapper>
+                      : null
+                  }
+                </CustomInput>
+                {showErrorMsg.password && <FormError>{showErrorMsg.password}</FormError> }
 
-    </LoginContainer>
+                <Link href="/forgot">
+                  <ResetPasswordLink>Forgot your password?</ResetPasswordLink>
+                </Link>
+
+                <Button 
+                  as="button" 
+                  bg='#00BFA6' 
+                  fontColor='#FFF' 
+                  size={2} 
+                  margin={'4.1rem 0 3.5rem'} 
+                  onClick={(e:any)=> handleLogin(e)}>
+                  Login
+                </Button>
+
+              </LoginForm>
+            </LoginWrapper>
+
+            <OrWrapper>OR</OrWrapper>
+
+            <div className="google-btn-wrapper">
+              <Button bg='#E6E6E6' fontColor='#000' size={1.4} margin={'5.6rem 0 2.2rem'}>
+                <GoogleIconWrapper>
+                  <Image src={GoogleIcon} alt="Google Logo" />
+                </GoogleIconWrapper>
+                <span>Login with Google</span>
+              </Button>
+
+            </div>
+
+            <CreateAccountWrapper>
+              New to exgPlanner? <Link href="/register"><a >Register</a></Link>
+            </CreateAccountWrapper>
+
+          </LoginContainer>
+        )
+      }
+    </>
   )
 }
 
@@ -236,9 +275,6 @@ const CustomInput = styled.div`
     svg {
         color: gray;
         font-size: 2.4rem;
-
-        
-        
     }
 
     input {
@@ -270,4 +306,63 @@ const PasswordIconWrapper = styled.div`
 const FormError = styled.div`
     color:#ff0033;
     font-size: 1.2rem;
+`
+
+const LoadingWrapper = styled.div`
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  svg {
+    font-size: 3rem;
+  }
+
+  p {
+    display: flex;
+  }
+`
+
+interface TextWithAnimationProps {
+  delay: string | number
+  color?: string
+}
+
+const TextWithAnimation = styled.span<TextWithAnimationProps>`
+  animation: jump 1s infinite;
+  animation-delay: ${props => props.delay}ms;
+  -webkit-animation-delay: ${props => props.delay}ms;
+  position: relative;
+  font-size: 3rem;
+  color: ${props => props.color || '#22303e'};
+
+  &.dot {
+    width: 8px;
+    height: 8px;
+    background: ${props => props.color || '#22303e'};
+    display: flex;
+    border-radius: 50%;
+    margin: 0 2px 8px;
+    
+  }
+
+
+  @keyframes jump {
+    0%   {bottom: 0px;}
+    20%  {bottom: 5px;}
+    40%  {bottom: 0px;}
+  }
+`
+
+const DotContainer = styled.div`
+  display: flex;
+  height: fit-content;
+`
+
+const LoadingText = styled.div`
+  display: flex;
+  align-items: flex-end;
 `

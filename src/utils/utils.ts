@@ -15,4 +15,3 @@ export const handleGetItemOnLocalStorage = (key:string) => {
 export const handleRemoveItemFromLocalStorage = (key:string) => {
   return window.localStorage.removeItem(key)
 }
-

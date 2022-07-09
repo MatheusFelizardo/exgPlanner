@@ -1,6 +1,5 @@
-import React, { createRef, useContext, useEffect, useRef, useState } from 'react'
+import React, { createRef, Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
 import { UserContext } from '@App/contexts/User'
-import { handleGetUserToken } from '@App/utils/utils'
 import AppHeader from '@App/components/Logged/AppHeader'
 import { Button } from '@App/components/Button/Button'
 import Link from 'next/link'
@@ -12,22 +11,20 @@ import Input from './Input/Input'
 
 const InitialAppScreen = () => {
   const formRef = useRef<HTMLFormElement|null>(null)
+  const { user, isLoading } = useContext(UserContext)
+  const { name } = user
 
   const [destination, setDestionation] = useState<DetinationProps >(
     {country: destinationOptions[0].country, currency: destinationOptions[0].currency}
   )
-  const [currentBudget, setCurrentBudget] = useState('')
   const [travelDate, setTravelDate] = useState('')
-  const [exchangeCost, setExchangeCost] = useState('')
-  const [currentBudgetCurrency, setCurrentBudgetCurrency]  = useState('')
-  const [totalCostCurrency, setTotalCostCurrency]  = useState('')
+  const [currentBudget, setCurrentBudget] = useState('0')
+  const [currentBudgetCurrency, setCurrentBudgetCurrency]  = useState(destinationOptions[0].currency)
+  const [exchangeCost, setExchangeCost] = useState('0')
+  const [totalCostCurrency, setTotalCostCurrency]  = useState(destinationOptions[0].currency)
 
   const [showForm, setShowForm] = useState(false)
-  const { user } = useContext(UserContext)
   const [infoTosave, setInfoToSave] = useState({})
-  const { name } = user
-
-  console.log(COINS)
 
   const handleSubmitForm = (e:EventProps) => {
     e.preventDefault()
@@ -35,9 +32,21 @@ const InitialAppScreen = () => {
       user: name,
       destination: destination.country,
       currentBudget,
+      currentBudgetCurrency,
       exchangeCost,
-      travelDate
+      totalCostCurrency,
+      travelDate, 
     }
+
+    const timestampTravelDate = Date.parse(travelDate)
+
+    if (timestampTravelDate < Date.now()) {
+      console.log("Invalid date")
+    } else {
+      console.log(travelDate)
+    }
+
+
     setInfoToSave(infos)
 
     console.log(infos)
@@ -46,6 +55,24 @@ const InitialAppScreen = () => {
   const handleDestination = (e:EventProps) => {
     const selectedDestination = destinationOptions.find(destination=> e.target.value === destination.country)
     setDestionation(selectedDestination as DetinationProps)
+  }
+
+  const formatCoin = (value: string, updater: Dispatch<SetStateAction<string>>) => {
+    if (Number(value) > 0) {
+      const options = { style: 'currency', currency: currentBudgetCurrency, currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0}
+      const formatedValue = new Intl.NumberFormat(undefined, options).format(Number(value))
+
+      updater(formatedValue)
+    }
+    
+  }
+
+  const revertCoinFormat = (value: string, updater: Dispatch<SetStateAction<string>>) => {
+    if (value) {
+      const splittedValue = value.split(/\s/g)[1]
+      const parsedValue = splittedValue && splittedValue.includes('.') ? splittedValue.replaceAll('.', '') : splittedValue
+      updater(parsedValue)
+    }   
   }
 
   return (
@@ -83,7 +110,6 @@ const InitialAppScreen = () => {
 
             <CustomCurrencyInput>
               {destination.currency && 
-              // <Currency className="currency" as="label" htmlFor="currentBudget">{destination.currency}</Currency>
               <select 
                 name="currentBudgetCurrency"
                 value={currentBudgetCurrency ? currentBudgetCurrency : destination.currency}
@@ -99,9 +125,14 @@ const InitialAppScreen = () => {
               <Input 
                 name="currentBudget" 
                 label="Your current budget" 
-                type="number" 
+                type="text" 
                 value={currentBudget}
-                onChange={(e)=> setCurrentBudget(e.target.value)}
+                onFocus={(e)=> revertCoinFormat(e.target.value, setCurrentBudget)}
+                onBlur={(e)=> formatCoin(e.target.value, setCurrentBudget)}
+                onChange={(e)=> {
+                  e.target.value = e.target.value.replace(/\D+/g, '')
+                  setCurrentBudget(e.target.value)
+                }}
               />
             </CustomCurrencyInput>
 
@@ -122,9 +153,14 @@ const InitialAppScreen = () => {
               <Input 
                 name="exchangeCost" 
                 label="Total cost of exchange" 
-                type="number" 
+                type="text" 
                 value={exchangeCost}
-                onChange={(e)=> setExchangeCost(e.target.value)}
+                onFocus={(e)=> revertCoinFormat(e.target.value, setExchangeCost)}
+                onBlur={(e)=> formatCoin(e.target.value, setExchangeCost)}
+                onChange={(e)=> {
+                  e.target.value = e.target.value.replace(/\D+/g, '')
+                  setExchangeCost(e.target.value)
+                }}
               />
             </CustomCurrencyInput>
 
