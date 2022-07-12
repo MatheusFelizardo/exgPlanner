@@ -17,7 +17,7 @@ interface CoinsProps {
 export interface CurrencyProps {
  data: {
     base: string
-    exchange_rates: CoinsProps
+    "exchange_rates": CoinsProps
     last_updated: number
  }
 }

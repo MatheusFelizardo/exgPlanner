@@ -4,15 +4,20 @@ import AppHeader from '@App/components/Logged/AppHeader'
 import { Button } from '@App/components/Button/Button'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { COINS, EventProps } from '@App/utils/types'
+import { COINS, CurrencyProps, EventProps } from '@App/utils/types'
 import {MdSave} from 'react-icons/md'
 import { destinationOptions, DetinationProps } from '@App/utils/mockedData'
 import Input from './Input/Input'
+import { convertCoinToUSD } from '@App/utils/utils'
+import { useCurrency } from '../contexts/Currency'
+import { info } from 'console'
 
 const InitialAppScreen = () => {
   const formRef = useRef<HTMLFormElement|null>(null)
+  const { data } = useCurrency()
+
   const { user, isLoading } = useContext(UserContext)
-  const { name } = user
+  const { _id } = user
 
   const [destination, setDestionation] = useState<DetinationProps >(
     {country: destinationOptions[0].country, currency: destinationOptions[0].currency}
@@ -29,50 +34,64 @@ const InitialAppScreen = () => {
   const handleSubmitForm = (e:EventProps) => {
     e.preventDefault()
     const infos = {
-      user: name,
-      destination: destination.country,
-      currentBudget,
-      currentBudgetCurrency,
-      exchangeCost,
-      totalCostCurrency,
+      user: _id,
+      country: destination.country,
+      currentBudget:currentBudgetCurrency === 'USD' ? 
+        revertCoinFormat(currentBudget) : 
+        convertCoinToUSD(revertCoinFormat(currentBudget), data?.exchange_rates[currentBudgetCurrency]),
+      exchangeCost: totalCostCurrency === 'USD' ? 
+        revertCoinFormat(exchangeCost) : 
+        convertCoinToUSD(revertCoinFormat(exchangeCost), data?.exchange_rates[totalCostCurrency]),
       travelDate, 
+      expense: [],
+      missing: ''
     }
 
-    const timestampTravelDate = Date.parse(travelDate)
+    const missingValue = (Number(infos.exchangeCost) - Number(infos.currentBudget)).toFixed(2)
+    
+    infos.missing = missingValue
 
-    if (timestampTravelDate < Date.now()) {
-      console.log("Invalid date")
-    } else {
-      console.log(travelDate)
-    }
-
-
+    // TO DO: Save currentBudgetCurrency and totalCostCurrency on database, possible format: 
+    // currentBudget: { value: '222', coin: 'BRL' }
+    
     setInfoToSave(infos)
-
     console.log(infos)
   }
 
   const handleDestination = (e:EventProps) => {
     const selectedDestination = destinationOptions.find(destination=> e.target.value === destination.country)
     setDestionation(selectedDestination as DetinationProps)
+    setCurrentBudgetCurrency(selectedDestination?.currency as string)
+    setTotalCostCurrency(selectedDestination?.currency as string)
   }
 
-  const formatCoin = (value: string, updater: Dispatch<SetStateAction<string>>) => {
+  const formatCoin = (value:  string, currency: string) => {
+    if (value === '0') {
+      return value
+    }
+
     if (Number(value) > 0) {
-      const options = { style: 'currency', currency: currentBudgetCurrency, currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0}
+      const options = { style: 'currency', currency, currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0}
       const formatedValue = new Intl.NumberFormat(undefined, options).format(Number(value))
 
-      updater(formatedValue)
+      return formatedValue
     }
-    
+    return value
   }
 
-  const revertCoinFormat = (value: string, updater: Dispatch<SetStateAction<string>>) => {
+  const revertCoinFormat = (value: string) => {
+
+    if (value === '0') {
+      return value
+    }
+
     if (value) {
       const splittedValue = value.split(/\s/g)[1]
       const parsedValue = splittedValue && splittedValue.includes('.') ? splittedValue.replaceAll('.', '') : splittedValue
-      updater(parsedValue)
+      return parsedValue
     }   
+
+    return value
   }
 
   return (
@@ -103,6 +122,7 @@ const InitialAppScreen = () => {
                 label="Travel date - if you don&apos;t have yet, fill with your goal" 
                 name="travelDate" 
                 type="date" 
+                min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]}
                 value={travelDate}
                 onChange={(e)=> setTravelDate(e.target.value)}
               />
@@ -127,8 +147,8 @@ const InitialAppScreen = () => {
                 label="Your current budget" 
                 type="text" 
                 value={currentBudget}
-                onFocus={(e)=> revertCoinFormat(e.target.value, setCurrentBudget)}
-                onBlur={(e)=> formatCoin(e.target.value, setCurrentBudget)}
+                onFocus={(e)=> {setCurrentBudget(revertCoinFormat(e.target.value))}}
+                onBlur={(e)=> setCurrentBudget(formatCoin(e.target.value, currentBudgetCurrency))}
                 onChange={(e)=> {
                   e.target.value = e.target.value.replace(/\D+/g, '')
                   setCurrentBudget(e.target.value)
@@ -155,8 +175,8 @@ const InitialAppScreen = () => {
                 label="Total cost of exchange" 
                 type="text" 
                 value={exchangeCost}
-                onFocus={(e)=> revertCoinFormat(e.target.value, setExchangeCost)}
-                onBlur={(e)=> formatCoin(e.target.value, setExchangeCost)}
+                onFocus={(e)=> setExchangeCost(revertCoinFormat(e.target.value))}
+                onBlur={(e)=> setExchangeCost(formatCoin(e.target.value, totalCostCurrency))}
                 onChange={(e)=> {
                   e.target.value = e.target.value.replace(/\D+/g, '')
                   setExchangeCost(e.target.value)

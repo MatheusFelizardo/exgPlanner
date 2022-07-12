@@ -44,5 +44,5 @@ export const Currency = ({children}: CurrencyProviderProps) => {
 // eslint-disable-next-line react-hooks/rules-of-hooks
 export const useCurrency = () => {
   const { data, isLoading, error } =  useContext(CurrencyContext)
-  return { data, isLoading, error } as {data: CurrencyProps, isLoading: boolean, error: boolean }
+  return { data, isLoading, error } 
 }

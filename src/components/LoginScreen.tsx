@@ -64,8 +64,6 @@ function LoginScreen() {
     setPassword(e.target.value)
   }
 
-  
-
   return (
     <>
       {isLoading ? 
@@ -73,8 +71,6 @@ function LoginScreen() {
           <MainImageWrapper>
             <Image src={LoginImage} alt="Woman holding the world" />  
           </MainImageWrapper>
-
-
           <LoginWrapper>
             <LoadingWrapper>
               <LoadingText>
@@ -97,11 +93,9 @@ function LoginScreen() {
           
 
           </LoginWrapper>
-
-
         </LoginContainer>
         : 
-        (!user.email && 
+        (!user?.email && 
           <LoginContainer>
             <MainImageWrapper>
               <Image src={LoginImage} alt="Woman holding the world" />  

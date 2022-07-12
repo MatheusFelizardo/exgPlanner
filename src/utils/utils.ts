@@ -15,3 +15,9 @@ export const handleGetItemOnLocalStorage = (key:string) => {
 export const handleRemoveItemFromLocalStorage = (key:string) => {
   return window.localStorage.removeItem(key)
 }
+
+export const convertCoinToUSD = (value: string, coin: number) => {
+  const parsedValue = coin > 1 ? Number(value) / coin : Number(value) * coin
+  
+  return parsedValue.toFixed(2)
+}
