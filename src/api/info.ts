@@ -1,16 +1,16 @@
 import { endpoint } from "."
 
-export const saveInfo = async (user: string, country: string, currentBudget: string, expenses: string[], missing: string, travelDate: string  ) => {
+export const saveInfo = async (user: string, country: string, currentBudget: string, expenses: string[], totalCost: string, travelDate: string  ) => {
   const query =  `mutation{
     saveInfo(
       user:"${user}", 
       country: "${country}", 
       currentBudget: "${currentBudget}", 
       expense: "${expenses}", 
-      missing: "${missing}", 
+      totalCost: "${totalCost}", 
       travelDate: "${travelDate}") {
       ok error data {
-        _id, country, currentBudget, expense, missing, travelDate
+        _id, country, currentBudget, expense, totalCost, travelDate
       }
     }
   }`

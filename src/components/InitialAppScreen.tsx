@@ -39,21 +39,16 @@ const InitialAppScreen = () => {
       currentBudget:currentBudgetCurrency === 'USD' ? 
         revertCoinFormat(currentBudget) : 
         convertCoinToUSD(revertCoinFormat(currentBudget), data?.exchange_rates[currentBudgetCurrency]),
-      exchangeCost: totalCostCurrency === 'USD' ? 
+      totalCost: totalCostCurrency === 'USD' ? 
         revertCoinFormat(exchangeCost) : 
         convertCoinToUSD(revertCoinFormat(exchangeCost), data?.exchange_rates[totalCostCurrency]),
       travelDate, 
-      expense: [],
-      missing: ''
+      expense: []
     }
-
-    const missingValue = (Number(infos.exchangeCost) - Number(infos.currentBudget)).toFixed(2)
-    
-    infos.missing = missingValue
 
     // TO DO: Save currentBudgetCurrency and totalCostCurrency on database, possible format: 
     // currentBudget: { value: '222', coin: 'BRL' }
-    
+
     setInfoToSave(infos)
     console.log(infos)
   }
