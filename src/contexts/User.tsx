@@ -2,6 +2,7 @@
 import { getUserDataByToken } from '@App/api/login'
 import React, { createContext, ReactNode, useEffect, useMemo, useState } from 'react'
 import Router from 'next/router'
+import { getInfoByUserId } from '@App/api/info'
 
 interface UserProps {
   _id: string | null
@@ -32,12 +33,25 @@ export const User = ({children}: UserProviderProps) => {
     const getUser = async(token: string) => {
       const response = await getUserDataByToken(token)
       const { data } = response.data.getUserByToken
+      
       setUser(data)
+      console.log(data)
+
       
       if(data) {
+        const { data: infos } = await getInfoByUserId(data._id)
+        console.log(infos)
+
+        if (infos) {
+          setTimeout(() => {
+            Router.push('/dashboard')
+            setIsLoading(false)
+          }, 2000)
+
+          return 
+        }
+
         setTimeout(() => {
-          // adjust this logic later will go to /start only if the user never fill the fields on this page.
-          // else will go to dashboard
           Router.push('/start')
           setIsLoading(false)
         }, 2000)
@@ -52,7 +66,11 @@ export const User = ({children}: UserProviderProps) => {
 
     if(token) {
       getUser(token)
-    } 
+    } else {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 2000)
+    }
     
   }, [])
 

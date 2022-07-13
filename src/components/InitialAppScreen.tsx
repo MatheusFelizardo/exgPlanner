@@ -1,16 +1,15 @@
-import React, { createRef, Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { UserContext } from '@App/contexts/User'
 import AppHeader from '@App/components/Logged/AppHeader'
 import { Button } from '@App/components/Button/Button'
-import Link from 'next/link'
 import styled from 'styled-components'
-import { COINS, CurrencyProps, EventProps } from '@App/utils/types'
+import { COINS, EventProps, InfosToSaveProps } from '@App/utils/types'
 import {MdSave} from 'react-icons/md'
 import { destinationOptions, DetinationProps } from '@App/utils/mockedData'
 import Input from './Input/Input'
 import { convertCoinToUSD } from '@App/utils/utils'
 import { useCurrency } from '../contexts/Currency'
-import { info } from 'console'
+import { saveInfos } from '@App/api/info'
 
 const InitialAppScreen = () => {
   const formRef = useRef<HTMLFormElement|null>(null)
@@ -31,26 +30,34 @@ const InitialAppScreen = () => {
   const [showForm, setShowForm] = useState(false)
   const [infoTosave, setInfoToSave] = useState({})
 
-  const handleSubmitForm = (e:EventProps) => {
+  const handleSubmitForm = async (e:EventProps) => {
     e.preventDefault()
-    const infos = {
+
+    if(!_id) return
+
+    const infos: InfosToSaveProps = {
       user: _id,
       country: destination.country,
-      currentBudget:currentBudgetCurrency === 'USD' ? 
-        revertCoinFormat(currentBudget) : 
-        convertCoinToUSD(revertCoinFormat(currentBudget), data?.exchange_rates[currentBudgetCurrency]),
-      totalCost: totalCostCurrency === 'USD' ? 
-        revertCoinFormat(exchangeCost) : 
-        convertCoinToUSD(revertCoinFormat(exchangeCost), data?.exchange_rates[totalCostCurrency]),
+      currentBudget: {
+        value: currentBudgetCurrency === 'USD' ? 
+          revertCoinFormat(currentBudget) : 
+          convertCoinToUSD(revertCoinFormat(currentBudget), data?.exchange_rates[currentBudgetCurrency]),
+        coin: currentBudgetCurrency
+      },
+      totalCost: {
+        value: totalCostCurrency === 'USD' ? 
+          revertCoinFormat(exchangeCost) : 
+          convertCoinToUSD(revertCoinFormat(exchangeCost), data?.exchange_rates[totalCostCurrency]),
+        coin: totalCostCurrency
+      },
       travelDate, 
       expense: []
     }
-
-    // TO DO: Save currentBudgetCurrency and totalCostCurrency on database, possible format: 
-    // currentBudget: { value: '222', coin: 'BRL' }
-
+  
     setInfoToSave(infos)
-    console.log(infos)
+    const response = await saveInfos(infos)
+    console.log(response)
+    
   }
 
   const handleDestination = (e:EventProps) => {

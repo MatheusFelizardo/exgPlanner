@@ -39,7 +39,7 @@ function LoginScreen() {
     }
 
     if (isEmailValid && password !== '') {
-      const response= await handleUserLogin(login, password)
+      const response = await handleUserLogin(login, password)
       const { error, data } = await response.data.userLogin
 
       if (error) {
@@ -47,9 +47,12 @@ function LoginScreen() {
       }
 
       setUser(data)
-      handleSaveOnLocalStorage('token', data.token)
-      handleSaveOnLocalStorage('user', data.user)
-      router.push('/start')
+
+      
+      if (data) {
+        handleSaveOnLocalStorage('token', data.token)
+        router.push('/start')
+      }
     }
 
   }

@@ -23,3 +23,23 @@ export interface CurrencyProps {
 }
 
 export const COINS = ["BRL", "CAD", "AUD","USD", "EUR", "GBP"]
+
+export interface CurrencyInfoProps {
+    value: string
+    coin: string
+}
+
+export interface ExpenseProps {
+    type: string
+    description: string
+    value: string
+}
+
+export interface InfosToSaveProps {
+    user: string
+    country: string
+    currentBudget: CurrencyInfoProps
+    totalCost: CurrencyInfoProps
+    travelDate: string, 
+    expense?: ExpenseProps[] | [null]
+}
