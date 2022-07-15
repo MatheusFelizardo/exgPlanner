@@ -82,7 +82,6 @@ const InitialAppScreen = () => {
   }
 
   const revertCoinFormat = (value: string) => {
-
     if (value === '0') {
       return value
     }

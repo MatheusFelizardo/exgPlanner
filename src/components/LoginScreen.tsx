@@ -9,20 +9,17 @@ import Image from 'next/image'
 import { EventProps } from '@App/utils/types'
 import Link from 'next/link'
 import { UserContext } from '@App/contexts/User'
-import { useRouter } from 'next/router'
 import { Button } from './Button/Button'
-
+import Loading from './utils/Loading'
 
 function LoginScreen() {
-  const { setUser, isLoading, user } = useContext(UserContext)
-  const router = useRouter()
+  const { setUser, isLoading, user, checkIfHasInfoSaved, redirectToDashboard, redirectToStartPage} = useContext(UserContext)
 
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [showErrorMsg, setShowErrorMsg] = useState<{email?: string, password?: string}>({email: '', password: ''})
   const [passType, setPassType] = useState('password')
   const [showPassword, setShowPassword] = useState(false)
-  
 
   const handleLogin = async (e:EventProps) => {
     e.preventDefault()
@@ -41,18 +38,23 @@ function LoginScreen() {
     if (isEmailValid && password !== '') {
       const response = await handleUserLogin(login, password)
       const { error, data } = await response.data.userLogin
-
       if (error) {
         return setShowErrorMsg({password: error})
       }
-
       setUser(data)
-
       
       if (data) {
         handleSaveOnLocalStorage('token', data.token)
-        router.push('/start')
+
+        const info = await checkIfHasInfoSaved(data._id)
+        if (info) {
+          redirectToDashboard()
+          return 
+        }
+
+        redirectToStartPage()
       }
+
     }
 
   }
@@ -75,30 +77,20 @@ function LoginScreen() {
             <Image src={LoginImage} alt="Woman holding the world" />  
           </MainImageWrapper>
           <LoginWrapper>
-            <LoadingWrapper>
-              <LoadingText>
-                <TextWithAnimation delay="100" color="#00BFA6">L</TextWithAnimation>
-                <TextWithAnimation delay="200" color="#00BFA6">O</TextWithAnimation>
-                <TextWithAnimation delay="300" color="#00BFA6">A</TextWithAnimation>
-                <TextWithAnimation delay="400" color="#00BFA6">D</TextWithAnimation>
-                <TextWithAnimation delay="500" color="#00BFA6">I</TextWithAnimation>
-                <TextWithAnimation delay="600" color="#00BFA6">N</TextWithAnimation>
-                <TextWithAnimation delay="700" color="#00BFA6">G</TextWithAnimation>
-
-
-                <DotContainer>
-                  <TextWithAnimation className="dot" delay="800" color="#00BFA6"></TextWithAnimation>
-                  <TextWithAnimation className="dot" delay="900" color="#00BFA6"></TextWithAnimation>
-                  <TextWithAnimation className="dot" delay="1000" color="#00BFA6"></TextWithAnimation>
-                </DotContainer>
-              </LoadingText>
-            </LoadingWrapper>
-          
-
+            <Loading />
           </LoginWrapper>
         </LoginContainer>
         : 
-        (!user?.email && 
+        (user?.email ? 
+          <LoginContainer>
+            <MainImageWrapper>
+              <Image src={LoginImage} alt="Woman holding the world" />  
+            </MainImageWrapper>
+            <LoginWrapper>
+              <Loading />
+            </LoginWrapper>
+          </LoginContainer>
+          :
           <LoginContainer>
             <MainImageWrapper>
               <Image src={LoginImage} alt="Woman holding the world" />  
@@ -190,9 +182,6 @@ function LoginScreen() {
 }
 
 export default LoginScreen
-
-
-
 
 const LoginContainer = styled.div`
     padding: 0 2.2rem 2rem;
@@ -303,63 +292,4 @@ const PasswordIconWrapper = styled.div`
 const FormError = styled.div`
     color:#ff0033;
     font-size: 1.2rem;
-`
-
-const LoadingWrapper = styled.div`
-  margin-top: 3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 10px;
-
-  svg {
-    font-size: 3rem;
-  }
-
-  p {
-    display: flex;
-  }
-`
-
-interface TextWithAnimationProps {
-  delay: string | number
-  color?: string
-}
-
-const TextWithAnimation = styled.span<TextWithAnimationProps>`
-  animation: jump 1s infinite;
-  animation-delay: ${props => props.delay}ms;
-  -webkit-animation-delay: ${props => props.delay}ms;
-  position: relative;
-  font-size: 3rem;
-  color: ${props => props.color || '#22303e'};
-
-  &.dot {
-    width: 8px;
-    height: 8px;
-    background: ${props => props.color || '#22303e'};
-    display: flex;
-    border-radius: 50%;
-    margin: 0 2px 8px;
-    
-  }
-
-
-  @keyframes jump {
-    0%   {bottom: 0px;}
-    20%  {bottom: 5px;}
-    40%  {bottom: 0px;}
-  }
-`
-
-const DotContainer = styled.div`
-  display: flex;
-  height: fit-content;
-`
-
-const LoadingText = styled.div`
-  display: flex;
-  align-items: flex-end;
 `

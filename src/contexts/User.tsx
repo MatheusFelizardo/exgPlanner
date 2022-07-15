@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { getUserDataByToken } from '@App/api/login'
-import React, { createContext, ReactNode, useEffect, useMemo, useState } from 'react'
+import React, { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Router from 'next/router'
 import { getInfoByUserId } from '@App/api/info'
+import { InfosToSaveProps } from '@App/utils/types'
 
 interface UserProps {
   _id: string | null
@@ -15,6 +17,10 @@ interface UserContextProps {
     user: UserProps 
     setUser: (user: UserProps) => void
     isLoading: boolean
+    checkIfHasInfoSaved: (user: string) => Promise<{data: InfosToSaveProps}>
+    redirectToDashboard: () => void
+    redirectToStartPage: () => void
+    initialUserObject: UserProps
 }
 
 interface UserProviderProps {
@@ -24,8 +30,31 @@ interface UserProviderProps {
 export const UserContext = createContext({} as UserContextProps);
 
 export const User = ({children}: UserProviderProps) => {
-  const [user, setUser] = useState<UserProps>({name: null, email: null, token: null, _id: null})
+  const initialUserObject = {name: null, email: null, token: null, _id: null}
+  const [user, setUser] = useState<UserProps>(initialUserObject)
   const [isLoading, setIsLoading] = useState(true)
+
+  const checkIfHasInfoSaved = async(id: string) => {
+    if (!id) return 
+    
+    const { data } = await getInfoByUserId(id)
+    
+    return data
+  }
+
+  const redirectToDashboard = useCallback(():void => {
+    setTimeout(() => {
+      Router.push('/dashboard')
+      setIsLoading(false)
+    }, 2000)
+  }, [])
+
+  const redirectToStartPage = useCallback(():void => {
+    setTimeout(() => {
+      Router.push('/start')
+      setIsLoading(false)
+    }, 2000)
+  }, [])
 
   useEffect(() => {
     const token:string|null = window.localStorage.getItem('token')
@@ -33,28 +62,17 @@ export const User = ({children}: UserProviderProps) => {
     const getUser = async(token: string) => {
       const response = await getUserDataByToken(token)
       const { data } = response.data.getUserByToken
-      
       setUser(data)
-      console.log(data)
 
       
       if(data) {
-        const { data: infos } = await getInfoByUserId(data._id)
-        console.log(infos)
-
-        if (infos) {
-          setTimeout(() => {
-            Router.push('/dashboard')
-            setIsLoading(false)
-          }, 2000)
-
+        const info = await checkIfHasInfoSaved(data.id)
+        if (info) {
+          redirectToDashboard()
           return 
         }
 
-        setTimeout(() => {
-          Router.push('/start')
-          setIsLoading(false)
-        }, 2000)
+        redirectToStartPage()
       } else {
         setTimeout(() => {
           setIsLoading(false)
@@ -78,7 +96,11 @@ export const User = ({children}: UserProviderProps) => {
     return {
       user,
       setUser,
-      isLoading
+      isLoading,
+      redirectToDashboard,
+      redirectToStartPage,
+      checkIfHasInfoSaved,
+      initialUserObject
     }
   }, [user, isLoading])
 

@@ -6,8 +6,13 @@ import { MdLogout, MdPerson } from 'react-icons/md'
 import styled from 'styled-components'
 
 const AppHeader = () => {
-  const { user } = useContext(UserContext)
+  const { user, setUser, initialUserObject } = useContext(UserContext)
   const { name } = user
+
+  const handleLogout = () => {
+    handleRemoveItemFromLocalStorage('token')
+    setUser(initialUserObject)
+  }
 
   return (
     <InitialHeader>
@@ -22,7 +27,7 @@ const AppHeader = () => {
 
       <LogoutWrapper>
         <Link href="/">
-          <a onClick={()=>handleRemoveItemFromLocalStorage('token')}>
+          <a onClick={handleLogout}>
             <MdLogout />
           </a>
         </Link>
