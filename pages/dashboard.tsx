@@ -1,3 +1,4 @@
+import CurrencyMenu from '@App/components/Dashboard/CurrencyMenu'
 import AppHeader from '@App/components/Logged/AppHeader'
 import type { NextPage } from 'next'
 import Head from 'next/head'
@@ -13,7 +14,7 @@ const Dashboard:NextPage = () => {
       </Head>
       <>
         <AppHeader />
-
+        <CurrencyMenu />
         
       </>
     </>
