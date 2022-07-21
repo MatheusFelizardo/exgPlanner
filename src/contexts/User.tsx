@@ -66,7 +66,7 @@ export const User = ({children}: UserProviderProps) => {
 
       
       if(data) {
-        const info = await checkIfHasInfoSaved(data.id)
+        const info = await checkIfHasInfoSaved(data._id)
         if (info) {
           redirectToDashboard()
           return 
