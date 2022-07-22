@@ -1,10 +1,24 @@
+import { useCurrency } from '@App/contexts/Currency'
 import { COINS } from '@App/utils/types'
-import { useState } from 'react'
+import { changeBaseCurrency } from '@App/utils/utils'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Select from '../utils/Select'
 
 const CurrencyMenu = () => {
-  const [selectedCurrency, setSelectedCurrency] = useState('')
+  const {data} = useCurrency()
+  const [selectedCurrency, setSelectedCurrency] = useState('USD')
+  const [currencyValues, setCurrencyValues] = useState({})
+
+  useEffect(() => {
+    if(data) {
+      const values = changeBaseCurrency(selectedCurrency, data.exchange_rates)
+      setCurrencyValues(values)
+    }
+    
+  },[data, selectedCurrency])
+
+  
   
   return (
     <CurrencyWrapper>
@@ -14,7 +28,7 @@ const CurrencyMenu = () => {
         {COINS.map(coin => {
           if (coin === selectedCurrency) return
 
-          return <Coin key={coin}>1.15 {coin}</Coin>
+          return <Coin key={coin}>{currencyValues && currencyValues[coin]} {coin}</Coin>
         })}
       </CoinPriceWrapper>
     </CurrencyWrapper>
@@ -42,7 +56,7 @@ const CoinPriceWrapper = styled.div`
 const Coin = styled.div`
     padding: .7rem .9rem;
     border: none;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #FFF;  
     border-right: 1px solid #f2f2f2;
@@ -55,6 +69,6 @@ const Coin = styled.div`
 const CustomSelect = styled(Select)`
   background: #4285F4;
   color: #FFF;  
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
 `
