@@ -40,9 +40,9 @@ export default AppHeader
 
 
 const InitialHeader = styled.div`
-    height: 6rem;
+    height: 6.7rem;
     width: 100%;
-    background: linear-gradient(45deg, #00BFA6, #00bf43);;
+    background: #F2F2F2;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -54,11 +54,11 @@ const HeaderItemWrapper = styled.div`
     align-items: center;
     gap: 1rem;
     span {
-        color: #FFF;
+        color: #333;
     }
     svg {
         font-size: 2rem;
-        color: #fff;
+        color: #333;
     }
 `
 const HeaderItem = styled.div`
@@ -66,12 +66,12 @@ const HeaderItem = styled.div`
     align-items: center;
     gap: .5rem;
     span {
-        color: #FFF;
+        color: #333;
         margin-top: .3rem;
     }
     svg {
         font-size:3rem;
-        color: #fff;
+        color: #333;
     }
 `
 const LogoutWrapper = styled.div`
@@ -79,11 +79,11 @@ const LogoutWrapper = styled.div`
     align-items: center;
     gap: .5rem;
     span {
-        color: #FFF;
+        color: #333;
         font-size: 1.4rem;
     }
     svg {
         font-size: 2.6rem;
-        color: #fff;
+        color: #333;
     }
 `

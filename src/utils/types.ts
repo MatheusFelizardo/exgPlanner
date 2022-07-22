@@ -22,7 +22,7 @@ export interface CurrencyProps {
  }
 }
 
-export const COINS = ["BRL", "CAD", "AUD","USD", "EUR", "GBP"]
+export const COINS = ["USD", "BRL", "CAD", "AUD", "EUR", "GBP"]
 
 export interface CurrencyInfoProps {
     value: string

@@ -1,6 +1,6 @@
 export interface DetinationProps {
-    country: string
-    currency: string
+  country: string
+  currency: string
 }
 
 export const destinationOptions:DetinationProps[] = [
