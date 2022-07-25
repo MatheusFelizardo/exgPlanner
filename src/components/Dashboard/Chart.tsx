@@ -11,15 +11,16 @@ export const data = {
     {
       data: [80, 20],
       backgroundColor: [
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(255, 99, 132, 0.2)'
+        '#00BFA6',
+        '#EA4335'
       ],
       borderColor: [
-        'rgba(75, 192, 192, 1)',
-        'rgba(255, 99, 132, 1)'
+        '#fff',
+        '#FFF'
       ],
-      borderWidth: 1
+      borderWidth: 1,
     },
+    
   ],
 };
   
@@ -27,11 +28,20 @@ const options = {
   plugins: {
     legend: {
       position: 'bottom',
-      align: 'start'
+      align: 'start',
+      labels: {
+        boxWidth: 8,
+        boxHeight: 6,
+        padding: 8,
+        usePointStyle: true,
+        pointStyle: 'circle',
+        
+      },
+      
     },
     datalabels: {
       display: true,
-      color: ['#3fa0a0', '#d7506d']
+      color: ['#FFF', '#FFF']
     }
   }}
 
@@ -46,6 +56,7 @@ const BudgetChart = ( ) => {
 export default BudgetChart
 
 const ChartWrapper = styled.div`
-    width: 50%;
-    padding: 0 1.6rem;
+    width: calc(50% - .4rem);
+    padding: .8rem 1.6rem;
+    background: #fff;
 `   
