@@ -1,17 +1,17 @@
+import React from 'react'
 import { NextPage } from "next";
 import { MouseEventHandler } from "react";
 
-
 export interface EventProps extends React.ChangeEvent<HTMLInputElement> {}
-export interface EventProps extends MouseEventHandler<HTMLButtonElement> {}
 
 
-interface CoinsProps {
-    EUR: string
-    BRL: string
-    CAD: string
-    AUD: string
-    USD: string
+export interface CoinsProps {
+    AUD?: string
+    BRL?: string
+    CAD?: string
+    EUR?: string
+    GBP?: string
+    USD?: string
 }
 
 export interface CurrencyProps {

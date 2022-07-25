@@ -1,9 +1,18 @@
+import Budget from '@App/components/Dashboard/Budget'
 import CurrencyMenu from '@App/components/Dashboard/CurrencyMenu'
 import AppHeader from '@App/components/Logged/AppHeader'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useState } from 'react'
+
+export interface CurrencyMenuProps {
+  selectedCurrency: string
+  // eslint-disable-next-line no-unused-vars
+  setSelectedCurrency?: (x:string) => void
+}
 
 const Dashboard:NextPage = () => {
+  const [selectedCurrency, setSelectedCurrency] = useState('USD')
 
   return (
     <>
@@ -14,7 +23,8 @@ const Dashboard:NextPage = () => {
       </Head>
       <>
         <AppHeader />
-        <CurrencyMenu />
+        <CurrencyMenu selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} />
+        <Budget selectedCurrency={selectedCurrency} />
         
       </>
     </>

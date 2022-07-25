@@ -1,18 +1,19 @@
 import { useCurrency } from '@App/contexts/Currency'
-import { COINS } from '@App/utils/types'
+import { COINS, CoinsProps } from '@App/utils/types'
 import { changeBaseCurrency } from '@App/utils/utils'
+import { CurrencyMenuProps } from 'pages/dashboard'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Select from '../utils/Select'
 
-const CurrencyMenu = () => {
+const CurrencyMenu = ({selectedCurrency, setSelectedCurrency}: CurrencyMenuProps) => {
   const {data} = useCurrency()
-  const [selectedCurrency, setSelectedCurrency] = useState('USD')
-  const [currencyValues, setCurrencyValues] = useState({})
+  const [currencyValues, setCurrencyValues] = useState<CoinsProps| null | any>(null)
 
   useEffect(() => {
     if(data) {
-      const values = changeBaseCurrency(selectedCurrency, data.exchange_rates)
+      const values: CoinsProps = changeBaseCurrency(selectedCurrency, data.exchange_rates)
+      console.log(values)
       setCurrencyValues(values)
     }
     
@@ -27,7 +28,6 @@ const CurrencyMenu = () => {
       <CoinPriceWrapper>
         {COINS.map(coin => {
           if (coin === selectedCurrency) return
-
           return <Coin key={coin}>{currencyValues && currencyValues[coin]} {coin}</Coin>
         })}
       </CoinPriceWrapper>
