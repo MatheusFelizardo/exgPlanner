@@ -1,10 +1,12 @@
 import Budget from '@App/components/Dashboard/Budget'
+import BudgetChart from '@App/components/Dashboard/Chart'
 import CurrencyMenu from '@App/components/Dashboard/CurrencyMenu'
 import CustomBudget from '@App/components/Dashboard/CustomBudget'
 import AppHeader from '@App/components/Logged/AppHeader'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
+import styled from 'styled-components'
 
 export interface CurrencyMenuProps {
   selectedCurrency: string
@@ -27,9 +29,12 @@ const Dashboard:NextPage = () => {
         <CurrencyMenu selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} />
         <Budget selectedCurrency={selectedCurrency} />
         <CustomBudget selectedCurrency={selectedCurrency} />
+
+        <BudgetChart />
       </>
     </>
   )
 }
 
 export default Dashboard
+
