@@ -3,6 +3,7 @@ import { FaPlusCircle } from 'react-icons/fa'
 import { CurrencyMenuProps } from 'pages/dashboard'
 
 const Budget = ({selectedCurrency}:CurrencyMenuProps) => {
+
   return (
     <BudgetContainer>
       <BudgetHeader>
@@ -49,7 +50,7 @@ const BudgetHeader = styled.div`
     display: flex;
     align-items: center;
     gap: .4rem;
-    margin: .4rem 0;
+    padding: .4rem 0;
 `
 const BudgetTotal = styled.div`
     width: 100%;

@@ -43,3 +43,10 @@ export interface InfosToSaveProps {
     travelDate: string, 
     expense?: ExpenseProps[] | [null]
 }
+
+export interface Budget {
+    name: string
+    description: string
+    value: string
+    increment?: boolean
+}
